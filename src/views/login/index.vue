@@ -13,14 +13,14 @@
     <div class="right">
       <a-card class="form-wrapper" :body-style="{ padding: '20px' }" :bordered="false">
         <div class="title">账号登录</div>
-        <div class="item-wrapper mt-6">
+        <div class="mt-6 item-wrapper">
           <a-input v-model="username" placeholder="请输入用户名/手机号" allow-clear size="large">
             <template #prefix>
               <icon-mobile />
             </template>
           </a-input>
         </div>
-        <div class="item-wrapper mt-4">
+        <div class="mt-4 item-wrapper">
           <a-input-password v-model="password" placeholder="请输入密码" allow-clear size="large">
             <template #prefix>
               <icon-lock />
@@ -33,16 +33,16 @@
             登录
           </a-button>
         </div>
-        <div class="my-width flex-sub mt-4 mb-8">
+        <div class="mt-4 mb-8 my-width flex-sub">
           <div class="flex justify-between">
             <a-checkbox v-model="autoLogin">自动登录</a-checkbox>
             <a-link :underline="false" type="primary">忘记密码？</a-link>
           </div>
         </div>
         <a-divider orientation="center">第三方登录</a-divider>
-        <div class="text-center text-lg">
+        <div class="text-lg text-center">
           <icon-alipay-circle />
-          <icon-github class="mr-6 ml-6" />
+          <icon-github class="ml-6 mr-6" />
           <icon-weibo-circle-fill />
         </div>
       </a-card>
@@ -51,6 +51,16 @@
 </template>
 
 <script lang="ts">
+// 声明额外的选项
+export default {
+  name: 'Login',
+  inheritAttrs: false,
+  customOptions: {}
+}
+</script>
+
+<script lang="ts" setup>
+  // https://v3.cn.vuejs.org/api/sfc-script-setup.html#%E5%8D%95%E6%96%87%E4%BB%B6%E7%BB%84%E4%BB%B6-script-setup
   import { defineComponent, ref } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import ImageBg1 from '@/assets/img_login_bg_01.png'
@@ -62,58 +72,44 @@
   import setting from '../../setting'
   import useAppInfo from '@/hooks/useAppInfo'
   import useUserStore from '@/store/modules/user'
-  export default defineComponent({
-    name: 'Login',
-    setup() {
-      const projectName = setting.projectName
-      const { version } = useAppInfo()
-      const username = ref('admin')
-      const password = ref('123456')
-      const autoLogin = ref(true)
-      const loading = ref(false)
-      const router = useRouter()
-      const route = useRoute()
-      const userStore = useUserStore()
-      const onLogin = () => {
-        loading.value = true
-        post({
-          url: login,
-          data: {
-            username: username.value,
-            password: password.value,
-          },
-        })
-          .then(({ data }: Response) => {
-            userStore.saveUser(data as UserState).then(() => {
-              router
-                .replace({
-                  path: route.query.redirect ? (route.query.redirect as string) : '/',
-                })
-                .then(() => {
-                  Message.success('登录成功，欢迎：' + username.value)
-                  loading.value = false
-                })
+  const projectName = setting.projectName
+  const { version } = useAppInfo()
+  const username = ref('admin')
+  const password = ref('123456')
+  const autoLogin = ref(true)
+  const loading = ref(false)
+  const router = useRouter()
+  const route = useRoute()
+  const userStore = useUserStore()
+
+  const onLogin = () => {
+    loading.value = true
+    post({
+      url: login,
+      data: {
+        username: username.value,
+        password: password.value,
+      },
+    })
+      .then(({ data }: Response) => {
+        userStore.saveUser(data as UserState).then(() => {
+          router
+            .replace({
+              path: route.query.redirect ? (route.query.redirect as string) : '/',
             })
-          })
-          .catch((error) => {
-            loading.value = false
-            Message.error(error.message)
-          })
-      }
-      return {
-        projectName,
-        version,
-        username,
-        password,
-        autoLogin,
-        loading,
-        onLogin,
-        ImageBg1,
-        logo,
-      }
-    },
-  })
+            .then(() => {
+              Message.success('登录成功，欢迎：' + username.value)
+              loading.value = false
+            })
+        })
+      })
+      .catch((error) => {
+        loading.value = false
+        Message.error(error.message)
+      })
+  }
 </script>
+
 
 <style lang="less" scoped>
   @keyframes scale-to {

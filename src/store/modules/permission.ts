@@ -27,6 +27,11 @@ const usePermissionStore = defineStore('permission-route', {
     },
   },
   actions: {
+    /**
+     * 加载路由
+     * @param data
+     * @returns
+     */
     async getRoutes(data: { userId: number; roleId: number }) {
       try {
         if (getMenuListByRoleId) {
@@ -47,6 +52,9 @@ const usePermissionStore = defineStore('permission-route', {
         return []
       }
     },
+    /**
+     * 初始化路由
+     */
     async initPermissionRoute() {
       const userStore = useUserStore()
       // 加载路由
@@ -56,6 +64,7 @@ const usePermissionStore = defineStore('permission-route', {
       })
       const mapRoutes = mapTwoLevelRouter(accessRoutes)
       mapRoutes.forEach((it: any) => {
+        // https://router.vuejs.org/zh/api/#addroute
         router.addRoute(it)
       })
       // 配置 `/` 路由的默认跳转地址

@@ -4,6 +4,7 @@ import { setupRouter } from './router'
 import './styles'
 import { setupGlobalComponent } from '@/layouts'
 import { setupPinia } from '@/store/pinia'
+// 设置路由器保护
 import setupRouterGuard from './router/guard'
 // 如果需要对接正式的接口，需要下面代码注释或者删除
 import { setupMock } from '../mock'
@@ -12,6 +13,7 @@ function setup() {
   const app = createApp(App)
   setupPinia(app)
   setupRouter(app)
+  // 设置路由器保护
   setupRouterGuard()
   setupGlobalComponent(app)
   // 如果需要对接正式的接口，需要下面代码注释或者删除
